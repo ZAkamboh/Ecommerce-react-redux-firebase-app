@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import firebase from "../firebase";
+
 export default class Search extends Component {
 
   constructor(props) {
@@ -9,8 +10,6 @@ export default class Search extends Component {
       dataa: "",
 
     }
-
-
   }
   handlesearch(e) {
     this.setState({ search: e.target.value }, () => {
@@ -19,8 +18,6 @@ export default class Search extends Component {
   }
 
   search() {
- 
-    
   }
   render() {
     return (

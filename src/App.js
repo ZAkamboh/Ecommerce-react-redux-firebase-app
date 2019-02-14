@@ -10,9 +10,21 @@ import { Router, Link, Route } from "react-router-dom";
 
 
 import Navbar from "./Component/Navbar";
-import Upload from "./Component/upload";
+import UploadImages from "./Component/uploadimages";
 import Gallery from "./Component/gallery";
 import  Detail from "./Component/Detail";
+import  Cart from "./Component/cart";
+import {Provider} from 'react-redux';
+import store from './store'
+import Create from './Component/create'
+import Camera from './Component/camera'
+import Mobile from './Component/mobile'
+import Signup from './Component/signup'
+import Login from './Component/login'
+import AdminHome from './Component/adminHome'
+import Logout from './Component/logout'
+
+
 
 
 const customHistory = createBrowserHistory();
@@ -39,16 +51,24 @@ class App extends Component {
   render() {
     return (
       <div>
+     
+        <Provider store={store}>
         <Router history={customHistory}>
           <div>
-            {/* <Route exact path="/" component={Home} />
-            <Route path="/chat" component={Chat} /> */}
-            <Route path="/" component={Navbar} />
-            <Route path="/upload" component={Upload} />
-            <Route path="/gallery" component={Gallery} />
+          <Navbar/>
+            <Route exact path="/" component={Gallery} />
             <Route path="/detail" component={Detail} />
+            <Route path="/cart" component={Cart} />
+            <Route path="/create" component={Create} />
+            <Route path="/cameras" component={Camera} />
+            <Route path="/mobiles" component={Mobile} />
+            <Route path="/admin" component={Login} />
+            <Route path="/home" component={ AdminHome} />
+            <Route path="/logout" component={Logout} />
+            <Route path="/uploadimages" component={UploadImages} />
           </div>
         </Router>
+        </Provider>
       </div>
     );
   }
