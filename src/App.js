@@ -9,8 +9,8 @@ import { Router, Link, Route } from "react-router-dom";
 // import Userone from "./Component/user1";
 
 
-import Navbar from "./Component/Navbar";
-import UploadImages from "./Component/uploadimages";
+import Navbars from "./Component/Navbar";
+import UploadImages from "./Component/uploaditems";
 import Gallery from "./Component/gallery";
 import  Detail from "./Component/Detail";
 import  Cart from "./Component/cart";
@@ -23,6 +23,9 @@ import Signup from './Component/signup'
 import Login from './Component/login'
 import AdminHome from './Component/adminHome'
 import Logout from './Component/logout'
+import Userlogin from './Component/userlogin'
+import Usersignup from './Component/usersignup'
+import Orders from './Component/orders'
 
 
 
@@ -55,7 +58,7 @@ class App extends Component {
         <Provider store={store}>
         <Router history={customHistory}>
           <div>
-          <Navbar/>
+          <Navbars/>
             <Route exact path="/" component={Gallery} />
             <Route path="/detail" component={Detail} />
             <Route path="/cart" component={Cart} />
@@ -65,7 +68,10 @@ class App extends Component {
             <Route path="/admin" component={Login} />
             <Route path="/home" component={ AdminHome} />
             <Route path="/logout" component={Logout} />
+            <Route path="/usersignup" component={Usersignup} />
+            <Route path="/userlogin" component={Userlogin} />
             <Route path="/uploadimages" component={UploadImages} />
+            <Route path="/orders" component={Orders} />
           </div>
         </Router>
         </Provider>

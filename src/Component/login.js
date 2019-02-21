@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import firebase from "../firebase";
+import { connect } from 'react-redux'
+import Appaction from "../store/action";
 class Login extends Component {
     constructor(props) {
         super(props);
@@ -7,6 +9,7 @@ class Login extends Component {
            
             email: "",
             password: "",
+            name:""
           
 
         };
@@ -14,25 +17,34 @@ class Login extends Component {
 
     userlogin() {
 
-        firebase
-            .auth()
-            .signInWithEmailAndPassword(this.state.email, this.state.password)
-            .then(response => {
+
+        var adminlogin={
+            email:this.state.email,
+            password:this.state.password,
+        
+        }
+    
+        this.props.login(adminlogin)
+
+        // firebase
+        //     .auth()
+        //     .signInWithEmailAndPassword(this.state.email, this.state.password)
+        //     .then(response => {
                 
             
-                firebase
-                    .database()
-                    .ref(`detailagain/${response.user.uid}`)
-                    .on("value",snap=>{
-                        var data=snap.val();
-                        localStorage.setItem("admin",JSON.stringify(data))
-                    });
-               this.props.history.push("/home");
+        //         firebase
+        //             .database()
+        //             .ref(`detailagain/${response.user.uid}`)
+        //             .on("value",snap=>{
+        //                // var data=snap.val();
+        //                 localStorage.setItem("admin",JSON.stringify(snap.val()))
+        //             });
+        //        this.props.history.push("/home");
                
-            })
-            .catch(error => {
-                alert(error.message);
-            });
+        //     })
+        //     .catch(error => {
+        //         alert(error.message);
+        //     });
     }
 
 
@@ -40,8 +52,9 @@ class Login extends Component {
     render() {
         return (
     
-                  <div>
+                  <div style={{marginTop:50}}>
                            <center>
+                       <h1>ADMIN LOGIN FORM</h1>
                             <input
                                 type="email"
                                 style={{ marginTop: "30px", width: "400px" }}
@@ -70,6 +83,8 @@ class Login extends Component {
                     >
                         Login
           </button>
+
+          {this.props.loginA && this.props.history.push('/home')}
           </center>
                   
             </div>
@@ -77,4 +92,17 @@ class Login extends Component {
     }
 }
 
-export default Login;
+ function mapState(state){
+     return{
+loginA:state.appReducer.loginadmin
+     }
+ }
+ function mapDispatch(dispatch){
+     return{
+         login:(payload)=>{
+             dispatch(Appaction.login(payload))
+         }
+     }
+ }
+
+export default connect(mapState,mapDispatch)(Login) 

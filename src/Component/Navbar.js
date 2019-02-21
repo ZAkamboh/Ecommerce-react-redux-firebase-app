@@ -2,21 +2,27 @@ import React, { Component } from "react";
 import { Router, Link, Route } from "react-router-dom";
 import { connect } from 'react-redux'
 import Appaction from "../store/action";
-class Navbar extends Component {
+import Navbar from 'react-bootstrap/Navbar'
+class Navbars extends Component {
   constructor(props) {
     super(props)
     this.state = {
       admin: undefined,
-      cartItem: ""
+      cartItem: 0,
+    //  user: ""
     }
   }
   componentWillMount() {
-    const admin = JSON.parse(localStorage.getItem("admin"))
-    if (admin !== null) {
-      var key = Object.keys(admin);
-      var vals = admin[key[0]];
-      this.setState({ admin: vals })
-    }
+    // const user = JSON.parse(localStorage.getItem("userrecords"))
+    // this.setState({ user: user }, () => {
+    //   //console.log(this.state.user)
+    // })
+    // const admin = JSON.parse(localStorage.getItem("admin"))
+    // if (admin !== null) {
+    //   var key = Object.keys(admin);
+    //   var vals = admin[key[0]];
+    //   this.setState({ admin: vals })
+    // }
     // const cartItem = JSON.parse(localStorage.getItem("cart"));
     // if (cartItem !== null && cartItem.length > 0) {
     //   this.setState({ cartItem: cartItem.length })
@@ -25,13 +31,13 @@ class Navbar extends Component {
     this.props.navbar()
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps && nextProps.cartItemss.length > 0) {
-
+    if (nextProps && nextProps.cartItemss !== null && nextProps.cartItemss.length > 0) {
+      console.log(nextProps.cartItemss);
       this.setState({ cartItem: nextProps.cartItemss.length })
     }
+
   }
   dropdown() {
-
   }
   render() {
     var styling = {
@@ -51,10 +57,11 @@ class Navbar extends Component {
 
 
     };
+    
     return (
       <div>
 
-        {this.state.admin ? (<nav className="navbar navbar-inverse bg-primary">
+        {this.props.navbarss ? (<nav className="navbar navbar-inverse bg-dark">
           <div className="navbar nabar-right">
             <div className="navbar nabar-right" />
 
@@ -62,21 +69,28 @@ class Navbar extends Component {
 
 
               <div>
-                {this.state.admin && this.state.admin.name}
+                {this.props.navbarss && this.props.navbarss.name}
               </div>
               <Link
                 className="navbar navbar-content"
                 style={styling}
                 to="/uploadimages"
               >
-                upload images
+                Upload Items
               </Link>
               <Link
                 className="navbar navbar-content"
                 style={styling}
                 to="/seeimages"
               >
-                see uploaded images
+                Uploaded Items
+              </Link>
+              <Link
+                className="navbar navbar-content"
+                style={styling}
+                to="/orders"
+              >
+                Orders
               </Link>
               <Link
                 className="btn btn-primary"
@@ -87,41 +101,58 @@ class Navbar extends Component {
 
             </div>
           </div>
-        </nav>) : (<nav className="navbar navbar-inverse bg-primary">
-          <div className="navbar nabar-right">
-            <div className="navbar nabar-right" />
+        </nav>) : (
 
-            <div className="navbar nabar-right">
+            <Navbar fixed="top" className="navbar navbar-inverse bg-dark">
 
+              <div className="navbar nabar-right">
+                <div className="navbar nabar-right" />
 
+                <div className="navbar nabar-right">
 
-              <Link
-                className="navbar navbar-content"
-                style={styling}
-                to="/mobiles"
-              >
-                Mobiles
-              </Link>
-              <Link
-                className="navbar navbar-content"
-                style={styling}
-                to="/cameras"
-              >
-                Cameras
-              </Link>
-              <Link
-                className="btn btn-primary"
-                to="/cart"
-                style={{ padding: 20, display: "flex" }}
-              >
-
-                <i className="fas fa-cart-plus" />
-                {this.state.cartItem && <div style={{ height: 20, width: 20, borderRadius: 10, backgroundColor: "red", top: -10 }}>{this.state.cartItem}</div>}
+                  <Link
+                    className="navbar navbar-content"
+                    style={styling}
+                    to="/"
+                  >
+                    Home
               </Link>
 
-            </div>
-          </div>
-        </nav>)}
+                  <Link
+                    className="navbar navbar-content"
+                    style={styling}
+                    to="/mobiles"
+                  >
+                    Mobiles
+              </Link>
+                  <Link
+                    className="navbar navbar-content"
+                    style={styling}
+                    to="/cameras"
+                  >
+                    Cameras
+              </Link>
+                  <Link
+
+                    to="/cart"
+                    style={{ padding: 20, display: "flex" }}
+                  >
+
+                    <i className="fas fa-cart-plus " />
+
+                    {this.props.cartItemss && this.props.cartItemss.length > 0 && <div style={{ height: 20, width: 20, color: "white", marginLeft: 5 }}>{this.props.cartItemss.length}</div>}
+                  </Link>
+                  {this.props.loginUser && <Link
+                    className="navbar navbar-content"
+                    style={styling}
+                    to="/logout"
+                  >
+                    Logout
+                  </Link>
+                  }
+                </div>
+              </div>
+            </Navbar>)}
 
 
       </div>
@@ -130,7 +161,10 @@ class Navbar extends Component {
 }
 function mapState(state) {
   return {
-    cartItemss: state.appReducer.cartItem
+    cartItemss: state.appReducer.cartItem,
+    navbarss: state.appReducer.navbar,
+    loginUser:state.appReducer.loginuser
+
   }
 }
 function mapDispatch(dispatch) {
@@ -138,10 +172,10 @@ function mapDispatch(dispatch) {
     localdata: () => {
       dispatch(Appaction.localdata())
     },
-    navbar:()=>{
+    navbar: () => {
       dispatch(Appaction.navbar())
     }
   }
 }
 
-export default connect(mapState, mapDispatch)(Navbar)
+export default connect(mapState, mapDispatch)(Navbars)

@@ -8,6 +8,10 @@ export default class Appaction {
   static CART = "CART"
   static LOCALDATA = "LOCALDATA"
   static NAVBAR = "NAVBAR"
+  static ADMINLOGIN = "ADMINLOGIN"
+  static LOGOUT = "LOGOUT";
+  static REMOVE_ITEM = "REMOVE_ITEM";
+  static USERLOGIN="USERLOGIN"
   static uploadd = (payload) => {
     alert("reached")
     return dispatch => {
@@ -23,29 +27,21 @@ export default class Appaction {
     }
   }
   static cart = (payload) => {
-    alert("reached")
     return dispatch => {
       var cartArray = JSON.parse(localStorage.getItem("cart"));
+      var newArray = [];
       if (cartArray === null) {
-        var newArray = [];
         newArray.push(payload);
-        //localStorage.setItem("cart", JSON.stringify(newArray));
-        return dispatch({
-          type: Appaction.CART,
-          payload: localStorage.setItem("cart", JSON.stringify(newArray))
-        })
-
       }
       else {
-        cartArray.push(payload);
-        //localStorage.setItem("cart", JSON.stringify(cartArray))
-        return dispatch({
-          type: Appaction.CART,
-          payload: localStorage.setItem("cart", JSON.stringify(cartArray))
-        })
-
+        newArray = cartArray;
+        newArray.push(payload);
       }
-
+      localStorage.setItem("cart", JSON.stringify(newArray))
+      return dispatch({
+        type: Appaction.CART,
+        payload: newArray
+      })
     }
   }
 
@@ -76,5 +72,85 @@ export default class Appaction {
         })
       }
     };
+  }
+  static userlogin=(payload)=>{
+    return dispatch=>{
+           firebase
+            .auth()
+            .signInWithEmailAndPassword(payload.email, payload.password)
+            .then(response => {
+                firebase
+                    .database()
+                    .ref(`userrecords/${response.user.uid}`)
+                    .on("value",snap=>{
+                       // var data=snap.val();
+                        localStorage.setItem("userrecords",JSON.stringify(snap.val()))
+                        dispatch({
+                          type: Appaction.USERLOGIN,
+                          payload: snap.val()
+                        })
+                    });
+              
+              // alert("successfully login")
+               
+            })
+          
+    }
+  }
+
+  static login = (payload) => {
+    return dispatch => {
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(payload.email, payload.password)
+        .then(response => {
+          firebase
+            .database()
+            .ref(`detailagain/${response.user.uid}`)
+            .on("value", snap => {
+
+              localStorage.setItem("admin", JSON.stringify(snap.val()))
+              dispatch({
+                type: Appaction.ADMINLOGIN,
+                payload: snap.val()
+              })
+            });
+
+
+        })
+
+    }
+  }
+  static logout = () => {
+    return dispatch => {
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          localStorage.removeItem("admin");
+          localStorage.removeItem("userrecords");
+
+          dispatch({
+            type: Appaction.LOGOUT
+          });
+        });
+    }
+  }
+  static removeItem = (payload) => {
+    return dispatch => {
+      var cartItems = JSON.parse(localStorage.getItem("cart"));
+      var newArray;
+      if (cartItems) {
+        newArray = cartItems.filter((f, i) => i !== payload);
+      }
+      else {
+        newArray = cartItems;
+      }
+      localStorage.setItem("cart",JSON.stringify(newArray))
+      return dispatch({
+        type: Appaction.REMOVE_ITEM,
+        payload: newArray
+      })
+    }
   }
 }

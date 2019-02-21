@@ -1,2 +1,2 @@
 import Appaction from './appAction'
-export default Appaction
+export default Appaction;

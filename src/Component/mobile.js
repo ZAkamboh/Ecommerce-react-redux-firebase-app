@@ -3,7 +3,7 @@ import firebase from "../firebase";
 import Search from "./search"
 import { connect } from 'react-redux'
 import Appaction from "../store/action";
- class Mobile extends Component {
+class Mobile extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -13,6 +13,7 @@ import Appaction from "../store/action";
         }
     }
     componentWillMount() {
+
         var value = [];
         firebase.database().ref('uploadimages').on("value", snap => {
             var data = snap.val();
@@ -21,7 +22,6 @@ import Appaction from "../store/action";
                     value.push({ ...data[keys], key: keys })
                 }
             }
-
             this.setState({ dataa: value, fetch: true })
         })
     }
@@ -31,23 +31,16 @@ import Appaction from "../store/action";
         this.setState({ searchedData: newData })
     }
     addToCart = (data) => {
-        // var cartArray = JSON.parse(localStorage.getItem("cart"));
-        // if (cartArray === null) {
-        //     var newArray = [];
-        //     newArray.push(data);
-        //     localStorage.setItem("cart", JSON.stringify(newArray));
-        //     alert("Successfully Added To Cart")
-        // }
-        // else {
-        //     cartArray.push(data);
-        //     localStorage.setItem("cart", JSON.stringify(cartArray))
-        //     alert("Successfully Added To Cart")
-        // }
+        // var user = JSON.parse(localStorage.getItem('userrecords'));
+        // data['email'] = user.email;
+        // data['name'] = user.fname + ' ' + user.lname;
+        // data['mobileNo'] = user.mobileno;
+        // data['address'] = user.address;
         this.props.cart(data)
     }
     render() {
         return (
-            <div>
+            <div className="bg-secondary">
                 <div className="container">
                     <div className="row">
                         <div className="col-10 mx-auto col-md-8 mt-5 text-center">
@@ -66,6 +59,7 @@ import Appaction from "../store/action";
                         </div>
                     </div>
                 </div>
+                {/* {this.props.cartitemr && alert("successfully added to cart")} */}
                 <div className="container my-5" >
                     <div className="row">
                         {this.state.fetch === true ? (
@@ -137,6 +131,7 @@ import Appaction from "../store/action";
                                                             <i className="fas fa-cart-plus" />
                                                         </button>
 
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -146,7 +141,7 @@ import Appaction from "../store/action";
                                 })
                         ) : (
                                 <center style={{ width: "100%" }}>
-                                    <div className="loader" style={{ marginTop: "20%" }} />
+                                    <div className="loader" style={{ color: "red" }}>.....data fetching plz wait</div>
                                 </center>
                             )}
 
@@ -156,18 +151,19 @@ import Appaction from "../store/action";
         );
     }
 }
- function mapStateToProps(state){
-return{
-
+function mapStateToProps(state) {
+    return {
+        cartitemr: state.appReducer.cartItem
+    }
 }
- }
 
- function mapDispatchToprops(dispatch){
-     return{
-         cart:(payload)=>{
-             dispatch(Appaction.cart(payload))
-         }
-     }
- }
+function mapDispatchToprops(dispatch) {
+    return {
+        cart: (payload) => {
+            dispatch(Appaction.cart(payload))
+        },
 
-export default connect(mapStateToProps,mapDispatchToprops)(Mobile) 
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToprops)(Mobile) 

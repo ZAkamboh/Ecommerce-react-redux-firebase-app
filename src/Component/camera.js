@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import firebase from "../firebase";
 import Search from "./search"
-export default class Camera extends Component {
+import { connect } from 'react-redux'
+import Appaction from "../store/action";
+class Camera extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -29,23 +31,25 @@ export default class Camera extends Component {
         this.setState({ searchedData: newData })
     }
     AddToCart(data) {
-      
-        var cartArray = JSON.parse(localStorage.getItem("cart"))
-        if (cartArray === null) {
-           var newCartArray = []
-            newCartArray.push(data)
-            localStorage.setItem("cart", JSON.stringify(newCartArray))
-            alert("successfully add to cart")
-        }
-        else{
-            cartArray.push(data);
-            localStorage.setItem("cart",JSON.stringify(cartArray))
-        }
+
+        // var cartArray = JSON.parse(localStorage.getItem("cart"))
+        // if (cartArray === null) {
+        //    var newCartArray = []
+        //     newCartArray.push(data)
+        //     localStorage.setItem("cart", JSON.stringify(newCartArray))
+        //     alert("successfully add to cart")
+        // }
+        // else{
+        //     cartArray.push(data);
+        //     localStorage.setItem("cart",JSON.stringify(cartArray))
+        // }
+       
+        this.props.cart(data)
     }
-  
+
     render() {
         return (
-            <div>
+            <div className="bg-secondary">
                 <div className="container">
                     <div className="row">
                         <div className="col-10 mx-auto col-md-8 mt-5 text-center">
@@ -154,3 +158,20 @@ export default class Camera extends Component {
         );
     }
 }
+
+function mapStateToProps(state) {
+    return {
+        cartitemr: state.appReducer.cartItem
+    }
+}
+
+function mapDispatchToprops(dispatch) {
+    return {
+        cart: (payload) => {
+            dispatch(Appaction.cart(payload))
+        },
+
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToprops)(Camera) 
